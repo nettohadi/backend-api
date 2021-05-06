@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f2ac8e7f-5a03-4df9-a0c0-f56e662d65a6" name="backend-api-remote" url="http://backend.hadi-syahbal.com">
+        <fileTransfer rootFolder="/home/hadisyah/backend.hadi-syahbal.com" accessType="SFTP" host="hadi-syahbal.com" port="64000" sshConfigId="d4601eec-ab4a-49af-9d8e-b4285f0f0a35" sshConfig="hadisyah@hadi-syahbal.com:64000 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,141 @@
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    users: [User!]! @paginate(defaultCount: 10)
+    user(id: ID @eq): User @find
+    authUser: User @guard
+    brands: [Brand!]! @all
+    brand(id: ID @eq): Brand @find
+    CarsByGroup (group: GroupType): [Car!]!
+    cars (brand_id: String @eq): [Car!]! @paginate(defaultCount: 10)
+    carsAll : [Car!]! @paginate(defaultCount: 10)
+    car(id: ID @eq): Car @find @guard
+    contents (type: ContentType @eq): [Content!]! @paginate(defaultCount: 5)
+    content(id: ID @eq): Content @find
+}
+
+type AuthResult {
+    user: User
+    access_token: String
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type ActionResult {
+    status: Boolean!
+    message: String!
+}
+
+type Mutation {
+    Login(input: LoginInput @spread): AuthResult @field(resolver: "App\\GraphQL\\Mutations\\Login@resolve")
+    Logout: ActionResult @field(resolver: "App\\GraphQL\\Mutations\\Login@revoke")
+}
+
+
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    image: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Brand {
+    id: ID!
+    name: String !
+    image: String !
+    desc: String !
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+union Imageable = Car
+
+type Car {
+    id: ID!,
+    name: String!
+    image: String!
+    min_price: Int!
+    max_price: Int!
+    group: String!
+    popularity: String!
+    built_year: Int!
+    brand: Brand @belongsTo
+    brand_id: Int
+    images: [Image] @morphMany
+    created_at: DateTime!
+    updated_at: DateTime!
+    body_type: BodyType !
+    transmission: TransmissionType !
+    fuel: FuelType!
+    segmen: String!
+    power: Int !
+}
+
+type Image {
+    id: Int!
+    url: String!
+    imageable: Imageable! @morphTo
+}
+
+enum ContentType {
+    NEWS @enum (value: "news")
+    TIPS @enum (value: "tips")
+    REVIEW @enum (value: "review")
+}
+
+enum GroupType {
+    MOST_POPULAR @enum (value: "MOST_POPULAR")
+    LATEST @enum (value: "LATEST")
+    LCGC @enum (value: "LCGC")
+    SUV @enum (value: "SUV")
+    Sedan @enum (value: "Sedan")
+    MVP @enum (value: "MVP")
+    City_Car @enum (value: "City_Car")
+}
+
+enum BodyType {
+    Hatchback @enum (value: "hatchback")
+    MVP @enum (value: "mvp")
+    Sedan @enum (value: "sedan")
+    SUV @enum (value: "suv")
+}
+
+enum TransmissionType {
+    Manual @enum (value: "manual")
+    Automatic @enum (value: "automatic")
+}
+
+enum FuelType {
+    Petroleum @enum (value: "petroleum")
+    Diesel @enum (value: "diesel")
+}
+
+type Writer {
+    id: ID!
+    name: String!
+    photo: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Content {
+    id: ID!
+    title: String!
+    overview: String!
+    content: String!
+    image: String!
+    writer: Writer! @hasOne
+    type: ContentType!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
